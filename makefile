@@ -1,10 +1,13 @@
 CC = g++
 CFLAGS = -std=c++11
 
-all: programa
+all: programaPD programaFB
 
-programa: p1_PD.cpp
-	$(CC) $(CFLAGS) p1_PD.cpp -o programa
+programaPD: p1_PD.cpp
+	$(CC) $(CFLAGS) p1_PD.cpp -o programaPD
+
+programaFB: p1_fuerzaBruta.cpp
+	$(CC) $(CFLAGS) p1_fuerzaBruta.cpp -o programaFB
 
 clean:
-	rm -f programa
+	rm -f programaPD programaFB
