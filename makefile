@@ -9,8 +9,8 @@ programaPD: p1_PD.cpp
 programaFB: p1_fuerzaBruta.cpp
 	$(CC) $(CFLAGS) p1_fuerzaBruta.cpp -o programaFB
 
-programaPD: p1_PDV2.cpp
+programaPDV2: p1_PDV2.cpp
 	$(CC) $(CFLAGS) p1_PDV2.cpp -o programaPDV2
 
 clean:
-	rm -f programaPD programaFB
+	rm -f programaPD programaFB programaPDV2
