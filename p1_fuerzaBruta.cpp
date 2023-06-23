@@ -51,12 +51,14 @@ vector<vector<int>> findWaysToClimb(int n, int r, int p, vector<int>& brokenStai
 void printPaths(vector<vector<int>>& paths) {
     int count = paths.size();
     cout << "Existen " << count << " formas posibles para llegar sin caerse:" << endl;
+    if(paths.size() < 15){ 
     for (int i = 0; i < count; i++) {
         cout << "- Forma " << i + 1 << ": pisando los escalones: ";
         for (int j = 0; j < paths[i].size(); j++) {
             cout << paths[i][j] << " ";
         }
         cout << endl;
+    }
     }
 }
 
@@ -72,19 +74,38 @@ int main() {
     cin >> p;
 
     // Generar aleatoriamente los escalones rotos
+    
     srand(time(0));
     vector<int> brokenStairs;
 
+    vector<int> misEscalones;
+    for (int j = 1 ; j < n; j++){
+        misEscalones.push_back(j);
+    }
+
+    //generar r random a partir de misEscalones
+    random_shuffle(misEscalones.begin(), misEscalones.end());
     cout << "escalones rotos: ";
     for (int i = 0; i < r; i++) {
-        int randomStair = rand() % (n + 1);
-        cout << randomStair << " - ";
-        brokenStairs.push_back(randomStair);
+        brokenStairs.push_back(misEscalones[i]);
+        cout << misEscalones[i] << " - ";
+        
     }
     cout<< " " << endl;
-
+/*
+    for (int i = 0; i < r; i++) {
+        int randomStair = rand() % (n + 1);
+        brokenStairs.push_back(randomStair);
+    }
+    */
+    unsigned t0, t1;
+    t0=clock();
     vector<vector<int>> paths = findWaysToClimb(n, r, p, brokenStairs);
+    t1 = clock();
     printPaths(paths);
+
+    double time = (double(t1-t0)/CLOCKS_PER_SEC);
+    cout << "Execution Time: " << time << endl;
 
     return 0;
 }
