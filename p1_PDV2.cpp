@@ -20,11 +20,14 @@ void findPaths(vector<int>& stairs, int n, int r, int p, int current, vector<int
             if (next <= n) {
                 path.push_back(next);
                 if (memo.find(next) != memo.end()) {
-                    // El resultado ya está en la tabla de memoización, lo usamos directamente
+                    // El resultado ya está en la tabla de memoizacion, lo usamos directamente
                     for (const auto& subpath : memo[next]) {
+                        //cout<< subpath[0] << endl;
                         vector<int> updatedPath = path;
                         updatedPath.insert(updatedPath.end(), subpath.begin(), subpath.end());
-                        paths.push_back(updatedPath);
+                        if (updatedPath.back() == n) {
+                            paths.push_back(updatedPath);
+                        }
                     }
                 } else {
                     findPaths(stairs, n, r, p, next, path, paths, memo);

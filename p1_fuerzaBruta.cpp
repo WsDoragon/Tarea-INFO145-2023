@@ -1,6 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
+
+#include <algorithm>
+
 
 using namespace std;
 
@@ -56,10 +61,27 @@ void printPaths(vector<vector<int>>& paths) {
 }
 
 int main() {
-    int n = 10; // Total de escalones
-    int r = 3; // Escalones rotos
-    int p = 2; // Base de los saltos (estos seran de la forma p^k)
-    vector<int> brokenStairs = {4, 5, 8}; // Escalones rotos
+    int n, r, p;
+    
+    // Solicitar al usuario los valores de n, r y p
+    cout << "Ingrese el número total de escalones (n): ";
+    cin >> n;
+    cout << "Ingrese el número de escalones rotos (r): ";
+    cin >> r;
+    cout << "Ingrese la base de los saltos (p): ";
+    cin >> p;
+
+    // Generar aleatoriamente los escalones rotos
+    srand(time(0));
+    vector<int> brokenStairs;
+
+    cout << "escalones rotos: ";
+    for (int i = 0; i < r; i++) {
+        int randomStair = rand() % (n + 1);
+        cout << randomStair << " - ";
+        brokenStairs.push_back(randomStair);
+    }
+    cout<< " " << endl;
 
     vector<vector<int>> paths = findWaysToClimb(n, r, p, brokenStairs);
     printPaths(paths);
