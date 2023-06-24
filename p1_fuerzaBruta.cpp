@@ -26,8 +26,12 @@ void findPaths(vector<int>& stairs, int n, int r, int p, int current, vector<int
                 findPaths(stairs, n, r, p, next, path, paths);
                 path.pop_back();
             }
+            else{
+                return;
+            }
         }
     }
+    else { return;}
 }
 
 // Funcion para encontrar las formas de subir la escalera
@@ -63,7 +67,7 @@ void printPaths(vector<vector<int>>& paths) {
 }
 
 int main() {
-    int n, r, p;
+    /*int n, r, p; descomentar luego
     
     // Solicitar al usuario los valores de n, r y p
     cout << "Ingrese el número total de escalones (n): ";
@@ -72,12 +76,18 @@ int main() {
     cin >> r;
     cout << "Ingrese la base de los saltos (p): ";
     cin >> p;
+*/
+    int n = 10; // Total de escalones
+    int r = 3; // Escalones rotos
+    int p = 2; // Base de los saltos (estos serán de la forma p^k)
+
+    vector<int> brokenStairs = {4,5,8}; // Escalones rotos
 
     // Generar aleatoriamente los escalones rotos
     
     srand(time(0));
+    /*Descomentar luego
     vector<int> brokenStairs;
-
     vector<int> misEscalones;
     for (int j = 1 ; j < n; j++){
         misEscalones.push_back(j);
@@ -92,6 +102,7 @@ int main() {
         
     }
     cout<< " " << endl;
+    */
 /*
     for (int i = 0; i < r; i++) {
         int randomStair = rand() % (n + 1);
