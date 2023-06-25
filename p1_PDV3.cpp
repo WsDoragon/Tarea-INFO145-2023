@@ -8,8 +8,10 @@
 
 using namespace std;
 
+
+
 // Funcion recusiva que encuentra todas las formas de subir la escalera
-void findPaths(vector<int> &stairs, int n, int r, int p, int current, vector<int> &path, vector<vector<int>> &paths)
+void findPaths(vector<int> &stairs, int n, int r, int p, int current, vector<int> &path, vector<vector<int>> &paths, vector<vector<int>> &dp)
 {
     // Si se llega al escalón n-esimo (la meta), se agrega el camino actual a la lista de caminos encontrados
     if (current == n)
@@ -18,33 +20,50 @@ void findPaths(vector<int> &stairs, int n, int r, int p, int current, vector<int
         return;
     }
 
-    // Se evalua si nuestro escalon actual se encuentra roto, si no lo esta se continua la busqueda de caminos para el escalon actual
-    if (stairs[current] != 1)
+    // Se verifica si la solución al subproblema ya se encuentra almacenada en el vector dp
+    if (!dp[current].empty())
     {
-        for (int i = 0; pow(p, i) < n; i++)
+        for (int i = 0; i < dp[current].size(); i++)
         {
-            int next = current + pow(p, i);
-            if (next <= n)
-            {
-                path.push_back(next);
-                findPaths(stairs, n, r, p, next, path, paths);
-                path.pop_back();
-            }
-            else
-            {
-                return;
-            }
+            //cout << "SOY DINAMICO" << endl;
+            int next = dp[current][i];
+            path.push_back(next);
+            findPaths(stairs, n, r, p, next, path, paths, dp);
+            path.pop_back();
         }
     }
     else
     {
-        return;
+        // Se evalua si nuestro escalon actual se encuentra roto, si no lo esta se continua la busqueda de caminos para el escalon actual
+        if (stairs[current] != 1)
+        {
+            for (int i = 0; pow(p, i) < n; i++)
+            {
+                int next = current + pow(p, i);
+                if (next <= n)
+                {
+                    path.push_back(next);
+                    findPaths(stairs, n, r, p, next, path, paths, dp);
+                    path.pop_back();
+                    dp[current].push_back(next); // Se almacena la solución al subproblema en el vector dp
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
+        else
+        {
+            return;
+        }
     }
 }
 
 // Funcion para encontrar las formas de subir la escalera
 vector<vector<int>> findWaysToClimb(int n, int r, int p, vector<int> &brokenStairs)
 {
+    vector<vector<int>> dp(n+1, vector<int>());
     vector<vector<int>> paths;
     vector<int> stairs(n + 1, 0); // Inicializamos los escalones como no rotos
 
@@ -56,7 +75,7 @@ vector<vector<int>> findWaysToClimb(int n, int r, int p, vector<int> &brokenStai
 
     vector<int> path;
     // path.push_back(0); // entregamos el escalon de inicio como el 0
-    findPaths(stairs, n, r, p, 0, path, paths);
+    findPaths(stairs, n, r, p, 0, path, paths,dp);
 
     return paths;
 }
@@ -87,7 +106,7 @@ void printPaths(vector<vector<int>> &paths){
 
 int main()
 {
-    /*int n, r, p; // descomentar luego
+   /* int n, r, p; // descomentar luego
 
     // Solicitar al usuario los valores de n, r y p
     cout << "Ingrese el número total de escalones (n): ";

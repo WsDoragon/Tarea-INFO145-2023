@@ -98,11 +98,11 @@ map<int, vector<vector<int>>> findWaysToClimbDP(int n, int r, int p, vector<int>
             //cout << "Con salto: " << saltos[j] << endl;
             if (dp.count(i - saltos[j]) > 0) {
                 for (auto& path : dp[i - saltos[j]]) {
-                    cout << "path: ";
+                    /*cout << "path: ";
                     for (int k = 0; k < path.size(); k++) {
                         cout << path[k] << " ";
                     }
-                    cout << endl;
+                    cout << endl;*/
                     new_path = path;
                     new_path.push_back(i);
                     dp[i].push_back(new_path);
@@ -116,10 +116,10 @@ map<int, vector<vector<int>>> findWaysToClimbDP(int n, int r, int p, vector<int>
 }
 
 int main() {
-    int n = 40; // Total de escalones
-    int r = 6; // Escalones rotos
+    int n = 10; // Total de escalones
+    int r = 3; // Escalones rotos
     int p = 2; // Base de los saltos (estos serán de la forma p^k)
-    vector<int> brokenStairs = {4, 5, 8, 14, 24, 30}; // Escalones rotos
+    vector<int> brokenStairs = {4,5,8}; // Escalones rotos
 
     //Calcular potencias
     vector<int> saltos;
