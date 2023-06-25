@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -std=c++11
 
-all: programaPD programaFB programaPDV2 programaP2 programaPDV3 test p2V2
+all: programaPD programaFB programaPDV2 programaP2 programaPDV3 test p2V2 p2V3 problemaAy
 
 programaPD: p1_PD.cpp
 	$(CC) $(CFLAGS) p1_PD.cpp -o programaPD
@@ -23,6 +23,12 @@ test: test.cpp
 
 p2V2: p2V2.cpp
 	$(CC) $(CFLAGS) p2V2.cpp -o p2V2
+
+p2V3: p2V3.cpp
+	$(CC) $(CFLAGS) p2V3.cpp -o p2V3
+
+problemaAy: problemaAy.cpp
+	$(CC) $(CFLAGS) problemaAy.cpp -o pay
 
 
 clean:
