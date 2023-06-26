@@ -1,125 +1,133 @@
-#include <queue>
+#include <iostream>
 #include <unordered_map>
 #include <vector>
-#include <iostream>
-#include <climits>
-#include <cmath>
+#include <queue>
+#include <limits>
+#include <cstdlib>
+#include <ctime>
+#include <algorithm>
 
 using namespace std;
 
-int costBoat(int p, int q, int k, int m) {
-    // Check if p is a city with a port and q is an island enabled to receive boats from the mainland
-    if (p <= k && q <= pow(2, floor(log2(m)))) {
-        // Calculate the cost of the boat trip from city p to island q
-        // For example, you can use a distance-based cost function
-        int distance = abs(p - q);
-        return distance * 10; // Assuming a cost of 10 per unit of distance
-    } else {
-        // Return a high cost if the boat trip is not possible
-        return INT_MAX;
-    }
-}
-
-vector<int> findMostEconomicalRoute(unordered_map<int, unordered_map<int, int>> G,
-                                     unordered_map<int, vector<int>> G_prime,
-                                     int s, int z, int k, int m) {
-    // Initialize distances to infinity and add start node to queue
-    unordered_map<int, int> distances;
+vector<pair<int, bool>> findMostEconomicalRoute(unordered_map<int, unordered_map<int, int>>& G, unordered_map<int, unordered_map<int, int>>& G_prime, int s, int z, int k) {
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
     unordered_map<int, bool> visited;
-    //auto cmp = [](int a, int b) { return distances[a] > distances[b]; };
-    auto cmp = [&distances](int a, int b) { return distances[a] > distances[b]; };
-    priority_queue<int, vector<int>, decltype(cmp)> queue(cmp);
-    unordered_map<int, int> previous;
+    unordered_map<int, int> distance;
+    unordered_map<int, int> prev;
 
-    for (auto& node : G) {
-        distances[node.first] = INT_MAX;
+    for (auto it = G.begin(); it != G.end(); it++) {
+        distance[it->first] = numeric_limits<int>::max();
+        prev[it->first] = -1;
     }
-    distances[s] = 0;
-    queue.push(s);
+    for (auto it = G_prime.begin(); it != G_prime.end(); it++) {
+        distance[it->first] = numeric_limits<int>::max();
+        prev[it->first] = -1;
+    }
 
-    while (!queue.empty()) {
-        int current = queue.top();
-        queue.pop();
+    pq.push(make_pair(0, s));
+    distance[s] = 0;
 
-        if (current == z) {
-            // Found shortest path, return it
-            vector<int> path;
-            int node = z;
-            while (node != s) {
-                path.insert(path.begin(), node);
-                node = previous[node];
-            }
-            path.insert(path.begin(), s);
-            return path;
-        }
+    while (!pq.empty()) {
+        int u = pq.top().second;
+        pq.pop();
+        visited[u] = true;
 
-        if (visited[current]) {
-            continue;
-        }
-        visited[current] = true;
-
-        for (auto& neighbor : G[current]) {
-            int distance = neighbor.second;
-            int alt = distances[current] + distance;
-            if (alt < distances[neighbor.first]) {
-                distances[neighbor.first] = alt;
-                previous[neighbor.first] = current;
-                queue.push(neighbor.first);
+        if (G.find(u) != G.end()) {
+            for (auto it = G[u].begin(); it != G[u].end(); it++) {
+                int v = it->first;
+                int weight = it->second;
+                if (!visited[v] && distance[u] + weight < distance[v]) {
+                    distance[v] = distance[u] + weight;
+                    prev[v] = u;
+                    pq.push(make_pair(distance[v], v));
+                }
             }
         }
-
-        if (G_prime.find(current) != G_prime.end()) {
-            for (auto& neighbor : G_prime[current]) {
-                if (!visited[neighbor]) {
-                    int cost = costBoat(current, neighbor, k, m);
-                    int alt = distances[current] + cost;
-                    if (alt < distances[neighbor]) {
-                        distances[neighbor] = alt;
-                        previous[neighbor] = current;
-                        queue.push(neighbor);
-                    }
+        if (G_prime.find(u) != G_prime.end()) {
+            for (auto it = G_prime[u].begin(); it != G_prime[u].end(); it++) {
+                int v = it->first;
+                int weight = it->second;
+                if (!visited[v] && distance[u] + weight < distance[v]) {
+                    distance[v] = distance[u] + weight;
+                    prev[v] = u;
+                    pq.push(make_pair(distance[v], v));
                 }
             }
         }
     }
 
-    // No path found
-    return vector<int>();
+    vector<pair<int, bool>> path;
+    int u = z;
+    while (prev[u] != -1) {
+        path.push_back(make_pair(u, G.find(prev[u]) != G.end()));
+        u = prev[u];
+    }
+    path.push_back(make_pair(u, G.find(prev[u]) != G.end()));
+    reverse(path.begin(), path.end());
+
+    return path;
 }
 
-
-
-
 int main() {
-    // Define the directed graph G and the undirected graph G_prime here
-    unordered_map<int, unordered_map<int, int>> G = {
-        {1, {{2, 5}, {3, 3}}},
-        {2, {{4, 1}}},
-        {3, {{4, 2}, {5, 6}}},
-        {4, {{5, 4}}},
-        {5, {}}
-    };
+    srand(time(NULL));
 
-    unordered_map<int, vector<int>> G_prime = {
-        {1, {2, 3}},
-        {2, {1}},
-        {3, {1, 4}},
-        {4, {3, 5}},
-        {5, {4}}
-    };
-
-    // Call the findMostEconomicalRoute function with the given parameters
-    vector<int> path = findMostEconomicalRoute(G, G_prime, 1, 5, 2, 9);
-
-    // Print the resulting path
-    cout << "Most economical path: ";
-    for (int i = 0; i < path.size(); i++) {
-        cout << path[i];
-        if (i < path.size() - 1) {
-            cout << " -> ";
+    unordered_map<int, unordered_map<int, int>> G;
+    int n = 5;
+    int m = 9;
+    for (int i = 1; i <= n; i++) {
+        for (int j = i + 1; j <= n; j++) {
+            int weight = rand() % 100 + 1;
+            G[i][j] = weight;
+            G[j][i] = weight;
         }
     }
-    cout << endl;
+
+    unordered_map<int, unordered_map<int, int>> G_prime;
+    for (int i = 1; i <= m; i++) {
+        for (int j = i + 1; j <= m; j++) {
+            int weight = rand() % 100 + 1;
+            G_prime[i][j] = weight;
+            G_prime[j][i] = weight;
+        }
+    }
+
+    int s = rand() % n + 1;
+    int z = rand() % m + 1;
+    while (z == s) {
+        z = rand() % m + 1;
+    }
+
+    cout << "Start node: City " << s << endl;
+    cout << "End node: Island " << z << endl;
+
+    int k = 2;
+
+    cout << "Cities:" << endl;
+    for (auto it = G.begin(); it != G.end(); it++) {
+        cout << "City " << it->first << ":" << endl;
+        for (auto it2 = it->second.begin(); it2 != it->second.end(); it2++) {
+            cout << "  -> City " << it2->first << " (weight " << it2->second << ")" << endl;
+        }
+    }
+
+    cout << "Islands:" << endl;
+    for (auto it = G_prime.begin(); it != G_prime.end(); it++) {
+        cout << "Island " << it->first << ":" << endl;
+        for (auto it2 = it->second.begin(); it2 != it->second.end(); it2++) {
+            cout << "  -> Island " << it2->first << " (weight " << it2->second << ")" << endl;
+        }
+    }
+
+    vector<pair<int, bool>> path = findMostEconomicalRoute(G, G_prime, s, z, k);
+
+    cout << "Most economical path from City " << s << " to Island " << z << ":" << endl;
+    for (auto it = path.begin(); it != path.end(); it++) {
+        if (it->second) {
+            cout << "City " << it->first << endl;
+        } else {
+            cout << "Island " << it->first << endl;
+        }
+    }
 
     return 0;
 }
