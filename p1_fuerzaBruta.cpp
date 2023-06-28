@@ -87,7 +87,7 @@ void printPaths(vector<vector<int>> &paths){
 
 int main()
 {
-    /*int n, r, p; // descomentar luego
+    int n, r, p; // descomentar luego
 
     // Solicitar al usuario los valores de n, r y p
     cout << "Ingrese el número total de escalones (n): ";
@@ -96,18 +96,18 @@ int main()
     cin >> r;
     cout << "Ingrese la base de los saltos (p): ";
     cin >> p;
-*/
-    
-        int n = 10; // Total de escalones
+
+    /*
+        int n = 40; // Total de escalones
         int r = 3; // Escalones rotos
         int p = 2; // Base de los saltos (estos serán de la forma p^k)
 
-        vector<int> brokenStairs = {4,5,8}; // Escalones rotos
+        vector<int> brokenStairs = {4,10,18}; // Escalones rotos
     
     // Generar aleatoriamente los escalones rotos
-
+*/
     srand(time(0));
-/*
+
     vector<int> brokenStairs;
     vector<int> misEscalones;
     for (int j = 1; j < n; j++)
@@ -124,7 +124,7 @@ int main()
         cout << misEscalones[i] << " - ";
     }
     cout << " " << endl;
-*/
+
     /*
         for (int i = 0; i < r; i++) {
             int randomStair = rand() % (n + 1);
